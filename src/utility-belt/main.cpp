@@ -5,7 +5,9 @@
 
 #include "pluginservicemodel.h"
 
-int entt_test();
+int entt_test(entt::registry& registry);
+
+static entt::registry registry;
 
 int main(int argc, char *argv[])
 {
@@ -13,7 +15,8 @@ int main(int argc, char *argv[])
 
     QGuiApplication app(argc, argv);
 
-    entt_test();
+    plugins_init(registry);
+    entt_test(registry);
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/main.qml"));

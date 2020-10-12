@@ -2,6 +2,7 @@
 
 #include <QAbstractListModel>
 #include <entt/entity/registry.hpp>
+#include "service.h"
 
 class ServiceModel : public QAbstractItemModel
 {

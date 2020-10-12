@@ -37,8 +37,7 @@ static void update(std::uint64_t dt, entt::registry &registry) {
     });
 }
 
-int entt_test() {
-    entt::registry registry;
+int entt_test(entt::registry& registry) {
     std::uint64_t dt = 16;
 
     for(auto i = 0; i < 10; ++i) {

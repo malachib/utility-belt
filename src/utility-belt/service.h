@@ -18,7 +18,7 @@ class service
     SemVer version;
 
 public:
-    service();
+    service(std::string name, SemVer version);
 };
 
 #endif // SERVICE_H
