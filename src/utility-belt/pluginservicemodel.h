@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QAbstractListModel>
+#include <entt/entity/registry.hpp>
 
 class ServiceModel : public QAbstractItemModel
 {
@@ -16,3 +17,4 @@ public:
     PluginServiceModel();
 };
 
+void plugins_init(entt::registry& registry);
