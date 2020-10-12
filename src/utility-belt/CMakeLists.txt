@@ -15,7 +15,7 @@ find_package(Qt5 COMPONENTS Core Quick REQUIRED)
 
 # Somehow, adding anything other than 'main.cpp qml.qrc' creates an absolute path UI element
 # in QT Creator for source files.  More obnoxious behaviors
-set(PROJECT_SOURCE_FILES main.cpp boilerplate.cpp service.cpp qml.qrc)
+set(PROJECT_SOURCE_FILES main.cpp boilerplate.cpp service.cpp pluginservicemodel.cpp qml.qrc)
 
 if(ANDROID)
     add_library(utility-belt SHARED ${PROJECT_SOURCE_FILES})

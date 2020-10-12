@@ -3,6 +3,8 @@
 
 #include <entt/entt.hpp>
 
+#include "pluginservicemodel.h"
+
 int entt_test();
 
 int main(int argc, char *argv[])

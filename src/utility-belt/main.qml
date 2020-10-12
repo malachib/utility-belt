@@ -21,6 +21,13 @@ Window {
         TabButton {
             text: qsTr("Static 2")
         }
+
+        Repeater {
+            model: PluginServicesModel
+            delegate: TabButton {
+                text: "Test"
+            }
+        }
     }
 
     StackLayout {
