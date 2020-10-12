@@ -13,10 +13,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt5 COMPONENTS Core Quick REQUIRED)
 
+# Somehow, adding anything other than 'main.cpp qml.qrc' creates an absolute path UI element
+# in QT Creator for source files.  More obnoxious behaviors
+set(PROJECT_SOURCE_FILES main.cpp boilerplate.cpp qml.qrc)
+
 if(ANDROID)
-    add_library(utility-belt SHARED main.cpp qml.qrc)
+    add_library(utility-belt SHARED ${PROJECT_SOURCE_FILES})
 else()
-    add_executable(utility-belt main.cpp qml.qrc)
+    add_executable(utility-belt ${PROJECT_SOURCE_FILES})
 endif()
 
 set(CONAN_DIR ${CMAKE_SOURCE_DIR}/../../conan)
