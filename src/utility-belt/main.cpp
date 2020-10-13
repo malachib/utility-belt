@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
 
     auto services = registry.view<service>();
 
-    QList<ServiceObject*> serviceObjects;
+    QList<QObject*> serviceObjects;
 
     for(const auto& entity : services)
     {

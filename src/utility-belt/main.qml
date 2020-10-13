@@ -14,18 +14,11 @@ Window {
         id: bar
         width: parent.width
 
-        TabButton {
-            text: qsTr("Static 1")
-        }
-
-        TabButton {
-            text: qsTr("Static 2")
-        }
-
         Repeater {
             model: PluginServicesModel
-            delegate: TabButton {
-                text: "Test"
+
+            TabButton {
+                text: modelData.name
             }
         }
     }
@@ -33,6 +26,7 @@ Window {
     StackLayout {
         currentIndex: bar.currentIndex
         anchors.top: bar.bottom
+        visible: false
 
         Item {
             id: static1
