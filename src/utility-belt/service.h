@@ -14,11 +14,14 @@ struct SemVer
 
 class service
 {
-    std::string name;
-    SemVer version;
+    std::string name_;
+    SemVer version_;
 
 public:
     service(std::string name, SemVer version);
+
+    std::string name() const { return name_; }
+    const SemVer& version() const { return version_; }
 };
 
 #endif // SERVICE_H
