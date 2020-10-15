@@ -15,21 +15,22 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
+    QQmlApplicationEngine engine;
 
-    plugins_init(registry);
+    plugins_init(registry, engine);
     entt_test(registry);
 
-    auto services = registry.view<service>();
+    auto services = registry.view<service, std::unique_ptr<QObject>>();
 
     QList<QObject*> serviceObjects;
 
     for(const auto& entity : services)
     {
-        auto& s = services.get<service>(entity);
-        serviceObjects.append(new ServiceObject(s));
+        const auto& s = services.get<service>(entity);
+        auto& o = services.get<std::unique_ptr<QObject>>(entity);
+        serviceObjects.append(new ServiceObject(s, o.get()));
     }
 
-    QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [url](QObject *obj, const QUrl &objUrl) {

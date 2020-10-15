@@ -1,6 +1,8 @@
 #pragma once
 
 #include <QAbstractListModel>
+#include <QQmlEngine>
+
 #include <entt/entity/registry.hpp>
 #include "service.h"
 
@@ -26,10 +28,13 @@ class ServiceObject : public QObject
 
     Q_PROPERTY(QString name READ name CONSTANT)
     Q_PROPERTY(QString version READ version CONSTANT)
+    Q_PROPERTY(QObject* surface READ surface CONSTANT)
 
 signals:
 
 private:
+    QObject* const surface_;
+
     QString name() const { return QString::fromStdString(underlying.name()); }
     QString version() const
     {
@@ -41,10 +46,16 @@ private:
         return v;
     }
 
+    QObject* surface() const
+    {
+        return surface_;
+    }
+
 public:
-    ServiceObject(const service& underlying) :
-        underlying(underlying) {}
+    ServiceObject(const service& underlying, QObject* surface) :
+        underlying(underlying), surface_(surface)
+    {}
 };
 
 
-void plugins_init(entt::registry& registry);
+void plugins_init(entt::registry& registry, QQmlEngine& engine);
