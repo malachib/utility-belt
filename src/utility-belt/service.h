@@ -4,6 +4,7 @@
 #include <string>
 #include <thread>
 #include <entt/entity/fwd.hpp>
+#include <entt/process/process.hpp>
 
 struct SemVer
 {
@@ -71,8 +72,6 @@ enum class ServiceStatuses
 
 class service_runtime : protected entity_helper
 {
-    std::thread worker;
-
 protected:
     virtual void run() = 0;
 
@@ -80,7 +79,43 @@ protected:
 
 public:
     service_runtime(entt::registry& registry, entt::entity entity);
-    virtual ~service_runtime()
+    virtual ~service_runtime() {}
+};
+
+// NOTE: Unsure if MI is gonna play nice with CRTP here
+class entt_service_runtime :
+        public service_runtime,
+        public entt::process<entt_service_runtime, std::uint32_t>
+{
+public:
+    using delta_type = std::uint32_t;
+
+    void init()
+    {
+        status(ServiceStatuses::Started);
+    }
+
+    void update(delta_type delta, void*)
+    {
+        run();
+    }
+};
+
+
+class threaded_service_runtime : public service_runtime
+{
+    std::thread worker;
+    bool stopService = false;
+
+    // wrapper for run which sets started/stopped status
+    void _run();
+
+public:
+    threaded_service_runtime(entt::registry& registry, entt::entity entity) :
+        service_runtime(registry, entity)
+    {}
+
+    virtual ~threaded_service_runtime()
     {
         // DEBT: Presumes a whole lot, that thread will finish up on its own
         worker.detach();
@@ -90,14 +125,14 @@ public:
     void stop();
 };
 
-class synthetic_service_runtime : public service_runtime
+class synthetic_service_runtime : public threaded_service_runtime
 {
 protected:
     void run() override;
 
 public:
     synthetic_service_runtime(entity_helper& eh) :
-        service_runtime(eh.registry, eh.entity) {}
+        threaded_service_runtime(eh.registry, eh.entity) {}
 };
 
 

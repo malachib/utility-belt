@@ -19,13 +19,13 @@ inline void service_runtime::status(ServiceStatuses s)
 }
 
 
-void service_runtime::start()
+void threaded_service_runtime::start()
 {
     try
     {
         status(ServiceStatuses::Starting);
 
-        std::thread worker(&service_runtime::run, this);
+        std::thread worker(&threaded_service_runtime::_run, this);
 
         status(ServiceStatuses::Started);
 
@@ -37,9 +37,16 @@ void service_runtime::start()
     }
 }
 
-void synthetic_service_runtime::run()
+void threaded_service_runtime::_run()
 {
     status(ServiceStatuses::Running);
 
+    run();
+
+    status(ServiceStatuses::Stopping);
     status(ServiceStatuses::Stopped);
+}
+
+void synthetic_service_runtime::run()
+{
 }
