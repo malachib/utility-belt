@@ -80,9 +80,14 @@ protected:
 
 public:
     service_runtime(entt::registry& registry, entt::entity entity);
-    virtual ~service_runtime() {}
+    virtual ~service_runtime()
+    {
+        // DEBT: Presumes a whole lot, that thread will finish up on its own
+        worker.detach();
+    }
 
     void start();
+    void stop();
 };
 
 class synthetic_service_runtime : public service_runtime
