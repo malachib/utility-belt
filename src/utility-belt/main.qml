@@ -30,14 +30,8 @@ Window {
         Repeater {
             model: PluginServicesModel
 
-            ColumnLayout {
-                Text {
-                    text: modelData.name
-                }
-
-                Loader {
-                    sourceComponent: modelData.surface
-                }
+            Loader {
+                sourceComponent: modelData.component
             }
         }
     }

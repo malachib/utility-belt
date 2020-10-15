@@ -20,14 +20,14 @@ int main(int argc, char *argv[])
     plugins_init(registry, engine);
     entt_test(registry);
 
-    auto services = registry.view<service, std::unique_ptr<QObject>>();
+    auto services = registry.view<service, std::unique_ptr<QQmlComponent>>();
 
     QList<QObject*> serviceObjects;
 
     for(const auto& entity : services)
     {
         const auto& s = services.get<service>(entity);
-        auto& o = services.get<std::unique_ptr<QObject>>(entity);
+        auto& o = services.get<std::unique_ptr<QQmlComponent>>(entity);
         serviceObjects.append(new ServiceObject(s, o.get()));
     }
 

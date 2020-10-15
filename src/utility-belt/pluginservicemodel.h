@@ -2,6 +2,7 @@
 
 #include <QAbstractListModel>
 #include <QQmlEngine>
+#include <QQmlComponent>
 
 #include <entt/entity/registry.hpp>
 #include "service.h"
@@ -28,12 +29,12 @@ class ServiceObject : public QObject
 
     Q_PROPERTY(QString name READ name CONSTANT)
     Q_PROPERTY(QString version READ version CONSTANT)
-    Q_PROPERTY(QObject* surface READ surface CONSTANT)
+    Q_PROPERTY(QQmlComponent* component READ component CONSTANT)
 
 signals:
 
 private:
-    QObject* const surface_;
+    QQmlComponent* const surface_;
 
     QString name() const { return QString::fromStdString(underlying.name()); }
     QString version() const
@@ -46,14 +47,14 @@ private:
         return v;
     }
 
-    QObject* surface() const
+    QQmlComponent* component() const
     {
         return surface_;
     }
 
 public:
-    ServiceObject(const service& underlying, QObject* surface) :
-        underlying(underlying), surface_(surface)
+    ServiceObject(const service& underlying, QQmlComponent* component) :
+        underlying(underlying), surface_(component)
     {}
 };
 
