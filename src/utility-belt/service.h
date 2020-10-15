@@ -3,6 +3,8 @@
 
 #include <string>
 #include <thread>
+#include <mutex>
+
 #include <entt/entity/fwd.hpp>
 #include <entt/process/process.hpp>
 
@@ -65,6 +67,7 @@ enum class ServiceStatuses
     Paused,
     Resuming,
     Stopping,
+    Halted,     // Forcefully stopped
     Stopped,
     Error       // Stopped, with an error
 };
@@ -106,6 +109,7 @@ class threaded_service_runtime : public service_runtime
 {
     std::thread worker;
     bool stopService = false;
+    std::mutex stopServiceMutex;
 
     // wrapper for run which sets started/stopped status
     void _run();
@@ -117,6 +121,7 @@ public:
 
     virtual ~threaded_service_runtime()
     {
+        stop();
         // DEBT: Presumes a whole lot, that thread will finish up on its own
         worker.detach();
     }

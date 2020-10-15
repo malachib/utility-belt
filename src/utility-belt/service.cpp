@@ -1,6 +1,9 @@
 #include "service.h"
 #include <entt/entt.hpp>
 
+#include <chrono>
+#include <thread>
+
 service::service(std::string name, SemVer version) :
     name_(name), version_(version)
 {
@@ -37,13 +40,40 @@ void threaded_service_runtime::start()
     }
 }
 
+// guidance from
+// https://stackoverflow.com/questions/42226269/how-to-say-to-stdthread-to-stop
+// DEBT: Optionally wait on status update and if it doesn't occur within a certain amount of time, return
+// a succeed/fail
+void threaded_service_runtime::stop()
+{
+    status(ServiceStatuses::Stopping);
+
+    std::unique_lock<std::mutex> lock(stopServiceMutex);
+    stopService = true;
+
+    // DEBT: Do a SIGABRT after a certain timeout
+}
+
 void threaded_service_runtime::_run()
 {
+    using namespace std::chrono_literals;
+
     status(ServiceStatuses::Running);
 
-    run();
+    for(;;)
+    {
+        {
+            std::unique_lock<std::mutex> lock(stopServiceMutex);
+            if(stopService) break;
+        }
 
-    status(ServiceStatuses::Stopping);
+        run();
+
+        // DEBT: To partially alleviate very nasty "no load" thread loop
+        // DEBT: Do this with a semaphore instead so we can abort right away
+        std::this_thread::sleep_for(100ms);
+    }
+
     status(ServiceStatuses::Stopped);
 }
 
