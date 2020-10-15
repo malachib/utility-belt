@@ -12,7 +12,7 @@ void plugins_init(entt::registry& registry, QQmlEngine& engine)
 {
     QQmlComponent component(&engine,
                             //QUrl::fromLocalFile("pocket.qml")
-                            QUrl("qrc:/pocket.qml")
+                            QUrl("qrc:/tool.qml")
                             );
 
     QObject* o = component.create();

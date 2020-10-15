@@ -26,17 +26,19 @@ Window {
     StackLayout {
         currentIndex: bar.currentIndex
         anchors.top: bar.bottom
-        visible: false
 
-        Item {
-            id: static1
-            Text {
-                text: qsTr("Static 1")
+        Repeater {
+            model: PluginServicesModel
+
+            ColumnLayout {
+                Text {
+                    text: modelData.name
+                }
+
+                Loader {
+                    sourceComponent: modelData.surface
+                }
             }
-        }
-
-        Item {
-            id: static2
         }
     }
 }
