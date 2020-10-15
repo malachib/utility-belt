@@ -25,13 +25,11 @@ void service_runtime::start()
     {
         status(ServiceStatuses::Starting);
 
-        /*
-         * pthread compile problem here
         std::thread worker(&service_runtime::run, this);
 
         status(ServiceStatuses::Started);
 
-        this->worker.swap(worker); */
+        this->worker.swap(worker);
     }
     catch(const std::system_error& e)
     {

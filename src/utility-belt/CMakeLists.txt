@@ -30,7 +30,7 @@ conan_basic_setup(TARGETS)
 target_compile_definitions(utility-belt
   PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
 target_link_libraries(utility-belt
-  PRIVATE Qt5::Core Qt5::Quick CONAN_PKG::entt)
+  PRIVATE Qt5::Core Qt5::Quick CONAN_PKG::entt pthread)
 
 # QtCreator supports the following variables for Android, which are identical to qmake Android variables.
 # Check http://doc.qt.io/qt-5/deployment-android.html for more information.
