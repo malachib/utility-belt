@@ -14,5 +14,5 @@ void plugins_init(entt::registry& registry)
 
     entity = registry.create();
 
-    registry.emplace<service>(entity, "test2", SemVer{1, 1, 0, ""});
+    registry.emplace<service>(entity, "test2", SemVer{0, 1, 0, ""});
 }

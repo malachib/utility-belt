@@ -18,7 +18,7 @@ Window {
             model: PluginServicesModel
 
             TabButton {
-                text: modelData.name
+                text: modelData.name + " (" + modelData.version + ")"
             }
         }
     }

@@ -25,11 +25,21 @@ class ServiceObject : public QObject
     Q_OBJECT
 
     Q_PROPERTY(QString name READ name CONSTANT)
+    Q_PROPERTY(QString version READ version CONSTANT)
 
 signals:
 
 private:
     QString name() const { return QString::fromStdString(underlying.name()); }
+    QString version() const
+    {
+        QString v = QString("%1.%2.%3").
+                arg(underlying.version().major).
+                arg(underlying.version().minor).
+                arg(underlying.version().patch);
+
+        return v;
+    }
 
 public:
     ServiceObject(const service& underlying) :
