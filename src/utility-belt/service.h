@@ -2,6 +2,8 @@
 #define SERVICE_H
 
 #include <string>
+#include <thread>
+#include <entt/entity/fwd.hpp>
 
 struct SemVer
 {
@@ -38,6 +40,20 @@ public:
 };
 
 
+class entity_helper
+{
+protected:
+    entt::entity entity;
+    entt::registry& registry;
+
+public:
+    entity_helper(entt::registry& registry, entt::entity entity) :
+        registry(registry),
+        entity(entity)
+    {}
+};
+
+
 enum class ServiceStatuses
 {
     Unstarted,
@@ -51,5 +67,28 @@ enum class ServiceStatuses
     Stopped,
     Error       // Stopped, with an error
 };
+
+
+class service_runtime : protected entity_helper
+{
+    std::thread worker;
+
+protected:
+    virtual void run() = 0;
+
+    void status(ServiceStatuses s);
+
+public:
+    service_runtime(entt::registry& registry, entt::entity entity);
+
+    void start();
+};
+
+class synthetic_service_runtime : public service_runtime
+{
+protected:
+    void run() override;
+};
+
 
 #endif // SERVICE_H
