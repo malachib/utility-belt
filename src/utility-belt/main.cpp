@@ -26,9 +26,10 @@ int main(int argc, char *argv[])
 
     for(const auto& entity : services)
     {
+        entity_helper eh(registry, entity);
         const auto& s = services.get<service>(entity);
         auto& o = services.get<std::unique_ptr<QQmlComponent>>(entity);
-        serviceObjects.append(new ServiceObject(s, o.get()));
+        serviceObjects.append(new ServiceObject(s, o.get(), eh));
     }
 
     const QUrl url(QStringLiteral("qrc:/main.qml"));

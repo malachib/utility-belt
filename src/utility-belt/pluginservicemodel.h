@@ -24,17 +24,25 @@ public:
 class ServiceObject : public QObject
 {
     const service& underlying;
+    entity_helper eh;
 
     Q_OBJECT
 
     Q_PROPERTY(QString name READ name CONSTANT)
     Q_PROPERTY(QString version READ version CONSTANT)
     Q_PROPERTY(QQmlComponent* component READ component CONSTANT)
+    //Q_PROPERTY(QString status READ status NOTIFY statusChanged)
 
 signals:
 
 private:
     QQmlComponent* const surface_;
+
+    /*
+    QString status() const
+    {
+        eh.registry.try_get<ServiceStatuses>(eh.entity);
+    }*/
 
     QString name() const { return QString::fromStdString(underlying.name()); }
     QString version() const
@@ -52,10 +60,18 @@ private:
         return surface_;
     }
 
+    void statusChanged(entt::registry& registry, entt::entity entity);
+
+    void connectup();
+
 public:
-    ServiceObject(const service& underlying, QQmlComponent* component) :
-        underlying(underlying), surface_(component)
-    {}
+    ServiceObject(const service& underlying, QQmlComponent* component, entity_helper eh) :
+        underlying(underlying),
+        eh(eh),
+        surface_(component)
+    {
+        connectup();
+    }
 };
 
 

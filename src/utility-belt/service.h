@@ -42,8 +42,8 @@ public:
 
 class entity_helper
 {
-protected:
-    entt::entity entity;
+public:
+    const entt::entity entity;
     entt::registry& registry;
 
 public:
@@ -80,6 +80,7 @@ protected:
 
 public:
     service_runtime(entt::registry& registry, entt::entity entity);
+    virtual ~service_runtime() {}
 
     void start();
 };
@@ -88,6 +89,10 @@ class synthetic_service_runtime : public service_runtime
 {
 protected:
     void run() override;
+
+public:
+    synthetic_service_runtime(entity_helper& eh) :
+        service_runtime(eh.registry, eh.entity) {}
 };
 
 
