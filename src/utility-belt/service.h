@@ -37,4 +37,19 @@ public:
     const SemVer& version() const { return version_; }
 };
 
+
+enum class ServiceStatuses
+{
+    Unstarted,
+    Starting,
+    Started,
+    Running,
+    Pausing,
+    Paused,
+    Resuming,
+    Stopping,
+    Stopped,
+    Error       // Stopped, with an error
+};
+
 #endif // SERVICE_H
