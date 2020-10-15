@@ -5,11 +5,11 @@
 
 struct SemVer
 {
-    unsigned major;
-    unsigned minor;
-    unsigned patch;
+    const unsigned major;
+    const unsigned minor;
+    const unsigned patch;
 
-    std::string prerelease;
+    const std::string prerelease;
 };
 
 class service
@@ -19,8 +19,21 @@ class service
 
 public:
     service(std::string name, SemVer version);
+    service(const service& copy_from) :
+        name_(copy_from.name_),
+        version_(copy_from.version_)
+    {
 
-    std::string name() const { return name_; }
+    }
+
+    service& operator=(service&& move_from)
+    {
+        name_ = move_from.name_;
+        new (&version_) SemVer(move_from.version_);
+        return *this;
+    }
+
+    const std::string& name() const { return name_; }
     const SemVer& version() const { return version_; }
 };
 
