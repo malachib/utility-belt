@@ -124,3 +124,4 @@ public:
 
 
 void plugins_init(entt::registry& registry, QQmlEngine& engine);
+void plugins_deinit(entt::registry& registry);

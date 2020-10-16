@@ -4,9 +4,11 @@
 #include <string>
 #include <thread>
 #include <mutex>
+#include <utility>
 
 #include <entt/entity/fwd.hpp>
 #include <entt/process/process.hpp>
+#include <entt/entity/registry.hpp>
 
 struct SemVer
 {
@@ -54,6 +56,12 @@ public:
         registry(registry),
         entity(entity)
     {}
+
+    template <class T, typename ...TArgs>
+    void replace(TArgs&&... args)
+    {
+        registry.replace<T>(entity, std::forward<TArgs>(args)...);
+    }
 };
 
 namespace services {
@@ -75,7 +83,9 @@ enum class ServiceStatuses
 
 struct progress
 {
-    float percentage;
+    typedef float numeric_type;
+
+    numeric_type percentage;
 };
 
 
@@ -92,14 +102,25 @@ struct status
 
 class service_runtime : protected entity_helper
 {
+    // DEBT: Kludgey, but on the right track.  The destruct process attempts to launch signals
+    // out to the registry after the registry has been destroyed.  This sentinel signals that
+    // no further registry interaction should take place (shutting down).
+    bool registry_available = true;
+    void sentinel_on_destroy(entt::registry&, entt::entity entity);
+
 public:
     typedef services::ServiceStatuses ServiceStatuses;
 
 protected:
     virtual void run() = 0;
 
+    /// After run receives the stop command, cleanup is (allegedly) run
+    /// (not working so well right now)
+    virtual void cleanup() {};
+
     void status(ServiceStatuses s);
     void status(std::string s);
+    void progress(float percent);
 
 public:
     service_runtime(entt::registry& registry, entt::entity entity);
@@ -148,8 +169,11 @@ public:
     virtual ~threaded_service_runtime()
     {
         stop();
-        // DEBT: Presumes a whole lot, that thread will finish up on its own
-        worker.detach();
+        // DEBT: Presumes a whole lot, that thread will finish up on its own.  Neither detach nor
+        // join are ideal here.  join is useful for debugging but could easily hang on exit,
+        // detach is useful for fast-exiting but it's *too* fast and cleanups don't occur
+        //worker.detach();
+        worker.join();
     }
 
     void start();

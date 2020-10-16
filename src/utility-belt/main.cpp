@@ -54,5 +54,9 @@ int main(int argc, char *argv[])
                                              QVariant::fromValue(serviceObjects));
     engine.load(url);
 
-    return app.exec();
+    int retVal = app.exec();
+
+    plugins_deinit(registry);
+
+    return retVal;
 }

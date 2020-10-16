@@ -11,11 +11,17 @@ PluginServiceModel::PluginServiceModel()
 
 void ServiceObject::enttStatusChanged(entt::registry& registry, entt::entity entity)
 {
+    // DEBT: Easy to read, but clumsy.  An external dispatcher looking up service object
+    // by entity itself is probably the better choice, and then calling enttStatusChanged from there
+    if(eh.entity != entity) return;
+
     emit statusChanged(status());
 }
 
 void ServiceObject::enttStatusChanged2(entt::registry& registry, entt::entity entity)
 {
+    if(eh.entity != entity) return;
+
     emit status2Changed(status2());
 }
 
@@ -25,6 +31,12 @@ void ServiceObject::connectup()
     eh.registry.on_update<services::status>().connect<&ServiceObject::enttStatusChanged2>(*this);
 }
 
+static entt::entity sentinel;
+
+void plugins_deinit(entt::registry& registry)
+{
+    registry.destroy(sentinel);
+}
 
 void plugins_init(entt::registry& registry, QQmlEngine& engine)
 {
@@ -38,6 +50,11 @@ void plugins_init(entt::registry& registry, QQmlEngine& engine)
                             );
 
     // TODO: Set user data on component to track entity
+
+    sentinel = registry.create();
+
+    // DEBT: sentinel value, use a specific struct instead
+    registry.emplace<float>(sentinel);
 
     auto entity = registry.create();
 

@@ -10,22 +10,39 @@ service::service(std::string name, SemVer version) :
 
 }
 
+void service_runtime::sentinel_on_destroy(entt::registry&, entt::entity)
+{
+    registry_available = false;
+}
+
 service_runtime::service_runtime(entt::registry& registry, entt::entity entity) :
        entity_helper(registry, entity)
 {
     registry.emplace<ServiceStatuses>(entity, ServiceStatuses::Unstarted);
+    registry.on_destroy<float>().connect<&service_runtime::sentinel_on_destroy>(*this);
 }
+
+
+inline void service_runtime::progress(float percent)
+{
+    if(!registry_available) return;
+
+    replace<services::progress>(percent);
+}
+
 
 inline void service_runtime::status(ServiceStatuses s)
 {
-    // FIX: Get crashes here on shutdown probably because registry isn't available anymore while thread
-    // is still running
-    registry.replace<ServiceStatuses>(entity, s);
+    if(!registry_available) return;
+
+    replace<ServiceStatuses>(s);
 }
 
 inline void service_runtime::status(std::string s)
 {
-    registry.replace<services::status>(entity, s);
+    if(!registry_available) return;
+
+    replace<services::status>(s);
 }
 
 
@@ -54,7 +71,6 @@ void threaded_service_runtime::start()
 // a succeed/fail
 void threaded_service_runtime::stop()
 {
-    // FIX: Sometimes crashes here because this is called after registry itself is removed from memory
     status(ServiceStatuses::Stopping);
 
     std::unique_lock<std::mutex> lock(stopServiceMutex);
@@ -83,6 +99,10 @@ void threaded_service_runtime::_run()
         // DEBT: Do this with a semaphore instead so we can abort right away
         std::this_thread::sleep_for(100ms);
     }
+
+    progress(0);
+    cleanup();
+    progress(100);
 
     status(ServiceStatuses::Stopped);
 }
