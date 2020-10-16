@@ -20,15 +20,15 @@ void ServiceObject::enttStatusChanged(entt::registry& registry, entt::entity ent
 
 void ServiceObject::enttStatusChanged2(entt::registry& registry, entt::entity entity)
 {
-    if(eh.entity != entity) return;
+    auto so = registry.get<ServiceObject*>(entity);
 
-    emit status2Changed(status2());
+    emit so->status2Changed(so->status2());
 }
 
 void ServiceObject::connectup()
 {
     eh.registry.on_update<ServiceStatuses>().connect<&ServiceObject::enttStatusChanged>(*this);
-    eh.registry.on_update<services::status>().connect<&ServiceObject::enttStatusChanged2>(*this);
+    eh.registry.on_update<services::status>().connect<&ServiceObject::enttStatusChanged2>();
 }
 
 static entt::entity sentinel;

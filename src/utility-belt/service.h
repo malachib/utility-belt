@@ -48,8 +48,8 @@ public:
 class entity_helper
 {
 public:
-    const entt::entity entity;
     entt::registry& registry;
+    const entt::entity entity;
 
 public:
     entity_helper(entt::registry& registry, entt::entity entity) :
@@ -61,6 +61,14 @@ public:
     void replace(TArgs&&... args)
     {
         registry.replace<T>(entity, std::forward<TArgs>(args)...);
+    }
+
+    // FIX: Somehow, this doesn't work right, probably because we're not doing
+    // parameter pack
+    template <class TComponent>
+    TComponent* try_get() const
+    {
+        return registry.try_get<TComponent>(entity);
     }
 };
 

@@ -32,13 +32,16 @@ int main(int argc, char *argv[])
     {
         entity_helper eh(registry, entity);
         const auto& s = services.get<service>(entity);
+        ServiceObject* so;
 #if FEATURE_ENABLE_UNIQUE_PTR_COMPONENT
         auto& o = services.get<std::unique_ptr<QQmlComponent>>(entity);
-        serviceObjects.append(new ServiceObject(s, o.get(), eh));
+        serviceObjects.append(so = new ServiceObject(s, o.get(), eh));
 #else
         auto c = services.get<QQmlComponent*>(entity);
-        serviceObjects.append(new ServiceObject(s, c, eh));
+        serviceObjects.append(so = new ServiceObject(s, c, eh));
 #endif
+        // DEBT: Confusing place to keep this, we want this more in the plugin_init area
+        registry.emplace<ServiceObject*>(entity, so);
     }
 
     const QUrl url(QStringLiteral("qrc:/main.qml"));

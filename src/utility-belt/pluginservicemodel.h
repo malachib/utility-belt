@@ -53,6 +53,8 @@ private:
 
     ServiceStatuses status() const
     {
+        // NOTE: Not ready for prime time
+        //auto s = eh.try_get<ServiceStatuses>();
         auto s = eh.registry.try_get<ServiceStatuses>(eh.entity);
         if(s == nullptr)
             return ServiceStatuses::Unstarted;
@@ -82,7 +84,7 @@ private:
     }
 
     void enttStatusChanged(entt::registry& registry, entt::entity entity);
-    void enttStatusChanged2(entt::registry& registry, entt::entity entity);
+    static void enttStatusChanged2(entt::registry& registry, entt::entity entity);
 
     void connectup();
 
