@@ -21,6 +21,12 @@ inline void service_runtime::status(ServiceStatuses s)
     registry.replace<ServiceStatuses>(entity, s);
 }
 
+inline void service_runtime::status(std::string s)
+{
+    registry.replace<services::status>(entity, s);
+}
+
+
 
 void threaded_service_runtime::start()
 {
@@ -80,6 +86,11 @@ void threaded_service_runtime::_run()
 
 void synthetic_service_runtime::run()
 {
+    using namespace std::chrono_literals;
+
+    status("count: " + std::to_string(counter++));
+
+    //std::this_thread::sleep_for(1000ms);
 }
 
 

@@ -99,6 +99,7 @@ protected:
     virtual void run() = 0;
 
     void status(ServiceStatuses s);
+    void status(std::string s);
 
 public:
     service_runtime(entt::registry& registry, entt::entity entity);
@@ -157,6 +158,8 @@ public:
 
 class synthetic_service_runtime : public threaded_service_runtime
 {
+    int counter = 0;
+
 protected:
     void run() override;
 

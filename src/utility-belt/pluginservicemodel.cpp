@@ -22,7 +22,7 @@ void ServiceObject::enttStatusChanged2(entt::registry& registry, entt::entity en
 void ServiceObject::connectup()
 {
     eh.registry.on_update<ServiceStatuses>().connect<&ServiceObject::enttStatusChanged>(*this);
-    eh.registry.on_update<services::status>().connect<&ServiceObject::enttStatusChanged>(*this);
+    eh.registry.on_update<services::status>().connect<&ServiceObject::enttStatusChanged2>(*this);
 }
 
 
