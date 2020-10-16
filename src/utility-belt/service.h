@@ -90,6 +90,11 @@ class entt_service_runtime :
         public service_runtime,
         public entt::process<entt_service_runtime, std::uint32_t>
 {
+protected:
+    entt_service_runtime(entity_helper& eh) :
+        service_runtime(eh.registry, eh.entity)
+    {}
+
 public:
     using delta_type = std::uint32_t;
 
@@ -138,6 +143,16 @@ protected:
 public:
     synthetic_service_runtime(entity_helper& eh) :
         threaded_service_runtime(eh.registry, eh.entity) {}
+};
+
+class synthetic_service_runtime2 : public entt_service_runtime
+{
+protected:
+    void run() override;
+
+public:
+    synthetic_service_runtime2(entity_helper& eh) :
+        entt_service_runtime(eh) {}
 };
 
 

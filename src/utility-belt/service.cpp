@@ -46,6 +46,7 @@ void threaded_service_runtime::start()
 // a succeed/fail
 void threaded_service_runtime::stop()
 {
+    // FIX: Sometimes crashes here because this is called after registry itself is removed from memory
     status(ServiceStatuses::Stopping);
 
     std::unique_lock<std::mutex> lock(stopServiceMutex);
@@ -78,5 +79,10 @@ void threaded_service_runtime::_run()
 }
 
 void synthetic_service_runtime::run()
+{
+}
+
+
+void synthetic_service_runtime2::run()
 {
 }

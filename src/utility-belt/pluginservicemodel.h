@@ -3,8 +3,10 @@
 #include <QAbstractListModel>
 #include <QQmlEngine>
 #include <QQmlComponent>
+#include <QThread>
 
 #include <entt/entity/registry.hpp>
+#include <entt/process/scheduler.hpp>
 #include "service.h"
 
 class ServiceModel : public QAbstractItemModel
@@ -72,6 +74,31 @@ public:
     {
         connectup();
     }
+};
+
+
+class EnttQtScheduler : public QObject
+{
+    Q_OBJECT
+
+    static constexpr int ms_interval = 100;
+
+    QThread workerThread;
+
+public:
+    typedef entt::scheduler<std::uint32_t> scheduler_type;
+
+private:
+    scheduler_type& scheduler;
+
+private slots:
+    void started();
+
+public:
+    EnttQtScheduler(scheduler_type& scheduler, bool autoStart = true, QObject* parent = nullptr);
+
+    void timerEvent(QTimerEvent* event) override;
+    void start();
 };
 
 
