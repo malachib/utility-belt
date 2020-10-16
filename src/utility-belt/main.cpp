@@ -20,7 +20,11 @@ int main(int argc, char *argv[])
     plugins_init(registry, engine);
     entt_test(registry);
 
+#if FEATURE_ENABLE_UNIQUE_PTR_COMPONENT
     auto services = registry.view<service, std::unique_ptr<QQmlComponent>>();
+#else
+    auto services = registry.view<service, QQmlComponent*>();
+#endif
 
     QList<QObject*> serviceObjects;
 
@@ -28,8 +32,13 @@ int main(int argc, char *argv[])
     {
         entity_helper eh(registry, entity);
         const auto& s = services.get<service>(entity);
+#if FEATURE_ENABLE_UNIQUE_PTR_COMPONENT
         auto& o = services.get<std::unique_ptr<QQmlComponent>>(entity);
         serviceObjects.append(new ServiceObject(s, o.get(), eh));
+#else
+        auto c = services.get<QQmlComponent*>(entity);
+        serviceObjects.append(new ServiceObject(s, c, eh));
+#endif
     }
 
     const QUrl url(QStringLiteral("qrc:/main.qml"));

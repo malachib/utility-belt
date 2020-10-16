@@ -46,7 +46,11 @@ void plugins_init(entt::registry& registry, QQmlEngine& engine)
     auto sr = new synthetic_service_runtime(eh);
 
     registry.emplace<service>(entity, "test", SemVer{1, 1, 0, ""});
+#if FEATURE_ENABLE_UNIQUE_PTR_COMPONENT
     registry.emplace<std::unique_ptr<QQmlComponent>>(entity, component);
+#else
+    registry.emplace<QQmlComponent*>(entity, component);
+#endif
     registry.emplace<std::unique_ptr<service_runtime>>(entity, sr);
     registry.emplace<services::progress>(entity);
     registry.emplace<services::status>(entity, "");
@@ -60,13 +64,18 @@ void plugins_init(entt::registry& registry, QQmlEngine& engine)
     sr = new synthetic_service_runtime(eh2);
 
     registry.emplace<service>(entity, "test2", SemVer{0, 1, 0, ""});
+#if FEATURE_ENABLE_UNIQUE_PTR_COMPONENT
     registry.emplace<std::unique_ptr<QQmlComponent>>(entity, component2);
+#else
+    registry.emplace<QQmlComponent*>(entity, component2);
+#endif
     registry.emplace<std::unique_ptr<service_runtime>>(entity, sr);
     registry.emplace<services::progress>(entity);
     registry.emplace<services::status>(entity, "");
 
     sr->start();
 
+#if UNUSED
     entity = registry.create();
     entity_helper eh3(registry, entity);
 
@@ -77,6 +86,7 @@ void plugins_init(entt::registry& registry, QQmlEngine& engine)
     // we need to make the scheduler/task portion a "has a" vs "is a" anyway
     //scheduler->attach<synthetic_service_runtime2>(eh3);
     new EnttQtScheduler(*scheduler, true);
+#endif
 }
 
 

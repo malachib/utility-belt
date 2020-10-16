@@ -18,6 +18,8 @@ service_runtime::service_runtime(entt::registry& registry, entt::entity entity) 
 
 inline void service_runtime::status(ServiceStatuses s)
 {
+    // FIX: Get crashes here on shutdown probably because registry isn't available anymore while thread
+    // is still running
     registry.replace<ServiceStatuses>(entity, s);
 }
 
@@ -71,7 +73,8 @@ void threaded_service_runtime::_run()
     {
         {
             std::unique_lock<std::mutex> lock(stopServiceMutex);
-            if(stopService) break;
+            if(stopService)
+                break;
         }
 
         run();

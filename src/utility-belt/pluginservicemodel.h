@@ -9,6 +9,10 @@
 #include <entt/process/scheduler.hpp>
 #include "service.h"
 
+// Looks like somehow Qt/QML may be grabbing ownership of QQmlComponent and
+// deleting it itself
+#define FEATURE_ENABLE_UNIQUE_PTR_COMPONENT 0
+
 class ServiceModel : public QAbstractItemModel
 {
     Q_OBJECT
