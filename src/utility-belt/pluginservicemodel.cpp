@@ -62,7 +62,7 @@ void plugins_init(entt::registry& registry, QQmlEngine& engine)
 
     auto sr = new synthetic_service_runtime(eh);
 
-    registry.emplace<service>(entity, "test", SemVer{1, 1, 0, ""});
+    registry.emplace<services::service>(entity, "test", SemVer{1, 1, 0, ""});
 #if FEATURE_ENABLE_UNIQUE_PTR_COMPONENT
     registry.emplace<std::unique_ptr<QQmlComponent>>(entity, component);
 #else
@@ -80,7 +80,7 @@ void plugins_init(entt::registry& registry, QQmlEngine& engine)
 
     sr = new synthetic_service_runtime(eh2);
 
-    registry.emplace<service>(entity, "test2", SemVer{0, 1, 0, ""});
+    registry.emplace<services::service>(entity, "test2", SemVer{0, 1, 0, ""});
 #if FEATURE_ENABLE_UNIQUE_PTR_COMPONENT
     registry.emplace<std::unique_ptr<QQmlComponent>>(entity, component2);
 #else

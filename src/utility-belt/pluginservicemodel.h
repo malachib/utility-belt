@@ -46,7 +46,7 @@ signals:
     void status2Changed(QString);
 
 private:
-    const service& underlying;
+    const services::service& underlying;
     entity_helper eh;
     QQmlComponent* const surface_;
     const services::status& status2_;
@@ -89,7 +89,7 @@ private:
     void connectup();
 
 public:
-    ServiceObject(const service& underlying, QQmlComponent* component, entity_helper eh) :
+    ServiceObject(const services::service& underlying, QQmlComponent* component, entity_helper eh) :
         underlying(underlying),
         eh(eh),
         surface_(component),

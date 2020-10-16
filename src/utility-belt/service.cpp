@@ -2,9 +2,10 @@
 #include <entt/entt.hpp>
 
 #include <chrono>
+#include <iostream>
 #include <thread>
 
-service::service(std::string name, SemVer version) :
+services::service::service(std::string name, SemVer version) :
     name_(name), version_(version)
 {
 
@@ -101,6 +102,7 @@ void threaded_service_runtime::_run()
     }
 
     progress(0);
+    // FIX: polymorphic call not happening, mysterious, since run() polymorphism does work
     cleanup();
     progress(100);
 
@@ -116,6 +118,10 @@ void synthetic_service_runtime::run()
     //std::this_thread::sleep_for(1000ms);
 }
 
+void synthetic_service_runtime::cleanup()
+{
+    std::clog << "synthetic_service_runtime: " << "Cleaning up" << std::endl;
+}
 
 void synthetic_service_runtime2::run()
 {

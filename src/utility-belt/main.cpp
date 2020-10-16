@@ -21,9 +21,9 @@ int main(int argc, char *argv[])
     entt_test(registry);
 
 #if FEATURE_ENABLE_UNIQUE_PTR_COMPONENT
-    auto services = registry.view<service, std::unique_ptr<QQmlComponent>>();
+    auto services = registry.view<services::service, std::unique_ptr<QQmlComponent>>();
 #else
-    auto services = registry.view<service, QQmlComponent*>();
+    auto services = registry.view<services::service, QQmlComponent*>();
 #endif
 
     QList<QObject*> serviceObjects;
@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
     for(const auto& entity : services)
     {
         entity_helper eh(registry, entity);
-        const auto& s = services.get<service>(entity);
+        const auto& s = services.get<services::service>(entity);
         ServiceObject* so;
 #if FEATURE_ENABLE_UNIQUE_PTR_COMPONENT
         auto& o = services.get<std::unique_ptr<QQmlComponent>>(entity);

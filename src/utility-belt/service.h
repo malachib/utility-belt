@@ -19,6 +19,8 @@ struct SemVer
     const std::string prerelease;
 };
 
+namespace services {
+
 class service
 {
     std::string name_;
@@ -44,6 +46,7 @@ public:
     const SemVer& version() const { return version_; }
 };
 
+}
 
 class entity_helper
 {
@@ -194,6 +197,7 @@ class synthetic_service_runtime : public threaded_service_runtime
 
 protected:
     void run() override;
+    void cleanup() override;
 
 public:
     synthetic_service_runtime(entity_helper& eh) :
