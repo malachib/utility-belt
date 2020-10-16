@@ -45,6 +45,7 @@ private:
     const service& underlying;
     entity_helper eh;
     QQmlComponent* const surface_;
+    const services::status& status2_;
 
     ServiceStatuses status() const
     {
@@ -57,9 +58,7 @@ private:
 
     QString status2() const
     {
-        auto& s = eh.registry.get<services::status>(eh.entity);
-
-        return QString::fromStdString(s.description);
+        return QString::fromStdString(status2_.description);
     }
 
     QString name() const { return QString::fromStdString(underlying.name()); }
@@ -87,7 +86,8 @@ public:
     ServiceObject(const service& underlying, QQmlComponent* component, entity_helper eh) :
         underlying(underlying),
         eh(eh),
-        surface_(component)
+        surface_(component),
+        status2_(eh.registry.get<services::status>(eh.entity))
     {
         connectup();
     }
