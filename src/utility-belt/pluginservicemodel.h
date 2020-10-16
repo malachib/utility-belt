@@ -25,26 +25,42 @@ public:
 
 class ServiceObject : public QObject
 {
-    const service& underlying;
-    entity_helper eh;
-
     Q_OBJECT
 
     Q_PROPERTY(QString name READ name CONSTANT)
     Q_PROPERTY(QString version READ version CONSTANT)
     Q_PROPERTY(QQmlComponent* component READ component CONSTANT)
-    //Q_PROPERTY(QString status READ status NOTIFY statusChanged)
+    Q_PROPERTY(ServiceStatuses status READ status NOTIFY statusChanged)
+    Q_PROPERTY(QString status2 READ status2 NOTIFY status2Changed)
+
+public:
+
+    typedef services::ServiceStatuses ServiceStatuses;
 
 signals:
+    void statusChanged(ServiceStatuses);
+    void status2Changed(QString);
 
 private:
+    const service& underlying;
+    entity_helper eh;
     QQmlComponent* const surface_;
 
-    /*
-    QString status() const
+    ServiceStatuses status() const
     {
-        eh.registry.try_get<ServiceStatuses>(eh.entity);
-    }*/
+        auto s = eh.registry.try_get<ServiceStatuses>(eh.entity);
+        if(s == nullptr)
+            return ServiceStatuses::Unstarted;
+        else
+            return *s;
+    }
+
+    QString status2() const
+    {
+        auto& s = eh.registry.get<services::status>(eh.entity);
+
+        return QString::fromStdString(s.description);
+    }
 
     QString name() const { return QString::fromStdString(underlying.name()); }
     QString version() const
@@ -62,7 +78,8 @@ private:
         return surface_;
     }
 
-    void statusChanged(entt::registry& registry, entt::entity entity);
+    void enttStatusChanged(entt::registry& registry, entt::entity entity);
+    void enttStatusChanged2(entt::registry& registry, entt::entity entity);
 
     void connectup();
 

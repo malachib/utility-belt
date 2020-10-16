@@ -33,6 +33,10 @@ Window {
             Loader {
                 sourceComponent: modelData.component
             }
+
+            Text {
+                text: modelData.status2
+            }
         }
     }
 }

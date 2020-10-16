@@ -9,14 +9,20 @@ PluginServiceModel::PluginServiceModel()
 }
 
 
-void ServiceObject::statusChanged(entt::registry& registry, entt::entity entity)
+void ServiceObject::enttStatusChanged(entt::registry& registry, entt::entity entity)
 {
+    emit statusChanged(status());
+}
 
+void ServiceObject::enttStatusChanged2(entt::registry& registry, entt::entity entity)
+{
+    emit status2Changed(status2());
 }
 
 void ServiceObject::connectup()
 {
-    eh.registry.on_update<ServiceStatuses>().connect<&ServiceObject::statusChanged>(*this);
+    eh.registry.on_update<ServiceStatuses>().connect<&ServiceObject::enttStatusChanged>(*this);
+    eh.registry.on_update<services::status>().connect<&ServiceObject::enttStatusChanged>(*this);
 }
 
 
@@ -42,6 +48,8 @@ void plugins_init(entt::registry& registry, QQmlEngine& engine)
     registry.emplace<service>(entity, "test", SemVer{1, 1, 0, ""});
     registry.emplace<std::unique_ptr<QQmlComponent>>(entity, component);
     registry.emplace<std::unique_ptr<service_runtime>>(entity, sr);
+    registry.emplace<services::progress>(entity);
+    registry.emplace<services::status>(entity, "");
 
     sr->start();
 
@@ -54,6 +62,8 @@ void plugins_init(entt::registry& registry, QQmlEngine& engine)
     registry.emplace<service>(entity, "test2", SemVer{0, 1, 0, ""});
     registry.emplace<std::unique_ptr<QQmlComponent>>(entity, component2);
     registry.emplace<std::unique_ptr<service_runtime>>(entity, sr);
+    registry.emplace<services::progress>(entity);
+    registry.emplace<services::status>(entity, "");
 
     sr->start();
 

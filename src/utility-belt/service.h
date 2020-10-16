@@ -56,6 +56,7 @@ public:
     {}
 };
 
+namespace services {
 
 enum class ServiceStatuses
 {
@@ -72,9 +73,28 @@ enum class ServiceStatuses
     Error       // Stopped, with an error
 };
 
+struct progress
+{
+    float percentage;
+};
+
+
+struct status
+{
+    // other human readable status for what service is actually up to while it's running
+    std::string description;
+};
+
+
+}
+
+
 
 class service_runtime : protected entity_helper
 {
+public:
+    typedef services::ServiceStatuses ServiceStatuses;
+
 protected:
     virtual void run() = 0;
 
